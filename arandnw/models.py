@@ -9,7 +9,7 @@ class Author(models.Model):
     ratingAuthor = models.SmallIntegerField(default=0)
 
     def __str__(self):
-        return f'{self.user.username.title()}'
+        return f'{self.authorUser.username.title()}'
 
     def update_rating(self):
         postRat = self.post_set.aggregate(postRating=Sum("rating"))
@@ -31,7 +31,7 @@ class Category(models.Model):
         return self.name
 
 class Post(models.Model):
-    author = models.ForeignKey(Author, on_delete=models.CASCADE)
+    author = models.ForeignKey('Author', on_delete=models.CASCADE)
     NEWS = "NW"
     ARTICLE = "AR"
     Choices = (
@@ -47,6 +47,9 @@ class Post(models.Model):
 
     def __str__(self) -> str:
         return f'{self.title()}'
+
+    def get_absolute_url(self):  # добавим абсолютный путь, чтобы после создания нас перебрасывало на страницу с новостями
+        return f'/news/{self.id}'
 
     def like(self):
         self.rating += 1
